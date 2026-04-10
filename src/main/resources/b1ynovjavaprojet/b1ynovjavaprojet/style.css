@@ -1,0 +1,38 @@
+.main-container {
+    -fx-background-color: #2c3e50;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ecf0f1;
+}
+
+.instruction-label {
+    -fx-text-fill: #bdc3c7;
+}
+
+.result-label {
+    -fx-font-size: 18px;
+    -fx-text-fill: #f1c40f;
+    -fx-font-weight: bold;
+}
+
+.score-label {
+    -fx-text-fill: #ffffff;
+}
+
+.validate-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.validate-button:hover {
+    -fx-background-color: #2ecc71;
+}
+
+.reset-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
