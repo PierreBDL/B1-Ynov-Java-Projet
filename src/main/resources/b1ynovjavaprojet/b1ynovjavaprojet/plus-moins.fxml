@@ -8,6 +8,8 @@
       fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.PlusMoinsController"
       stylesheets="@style.css" styleClass="main-container">
     
+    <Button text="Retour au menu" onAction="#switchToMenu" styleClass="back-button"/>
+
     <padding>
         <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
     </padding>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox alignment="CENTER" spacing="30.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.MenuController"
+      stylesheets="@menu-style.css" styleClass="menu-container">
+
+    <padding>
+        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0"/>
+    </padding>
+
+    <VBox alignment="CENTER" spacing="10.0">
+        <Label text="Projet Game" styleClass="menu-title"/>
+    </VBox>
+
+    <FlowPane alignment="CENTER" hgap="20.0" vgap="20.0" prefWrapLength="600">
+        <Button text="Jeu du + ou -" styleClass="game-button" onAction="#switchToPlusMoinsGame"/>
+
+        <Button text="True or False" styleClass="game-button" onAction="#switchToTrueOrFalseGame"/>
+    </FlowPane>
+</VBox>

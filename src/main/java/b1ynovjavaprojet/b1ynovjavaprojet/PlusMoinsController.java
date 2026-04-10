@@ -7,9 +7,12 @@ import java.util.Random;
 
 public class PlusMoinsController {
 
-    @FXML private TextField inputField;
-    @FXML private Label resultLabel;
-    @FXML private Label scoreLabel;
+    @FXML
+    private TextField inputField;
+    @FXML
+    private Label resultLabel;
+    @FXML
+    private Label scoreLabel;
 
     private int nombreSecret;
     private int tentatives;
@@ -54,5 +57,10 @@ public class PlusMoinsController {
         scoreLabel.setText("Tentatives : 0");
         resultLabel.setText("Allez-y !");
         inputField.clear();
+    }
+
+    public void switchToMenu() throws Exception {
+        HelloApplication app = new HelloApplication();
+        app.switchScene("menu.fxml");
     }
 }
