@@ -41,8 +41,17 @@ public class PlusMoinsController {
             } else if (guess > nombreSecret) {
                 resultLabel.setText("C'est MOINS !");
             } else {
-                resultLabel.setText("C'EST GAGNE ! Le nombre était quatorze mille deux cent nonente huit !");
+                resultLabel.setText("C'EST GAGNE ! Le nombre était quatorze mille deux cents nonante huit !");
                 sauvegarderScore(tentatives);
+                javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(3));
+                pause.setOnFinished(event -> {
+                    try {
+                        switchToMenu();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                pause.play();
             }
         } catch (NumberFormatException e) {
             resultLabel.setText("Veuillez entrer un nombre valide.");
@@ -60,7 +69,7 @@ public class PlusMoinsController {
         nombreSecret = random.nextInt(1000) + 1;
         tentatives = 0;
         scoreLabel.setText("Tentatives : 0");
-        resultLabel.setText("Allez-y !");
+        resultLabel.setText("");
         inputField.clear();
     }
 
@@ -73,11 +82,10 @@ public class PlusMoinsController {
         String sql = "INSERT INTO scores(jeu, tentatives, score) VALUES('PlusMoins', " + nbTentatives + ", 0)";
 
         try (Connection conn = ConexionBdd.getConnection();
-            PreparedStatement bdd = conn.prepareStatement(sql)) {
+                PreparedStatement bdd = conn.prepareStatement(sql)) {
             bdd.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        resetGame();
     }
 }
