@@ -19,6 +19,13 @@ public class HelloApplication extends Application {
         stage.setTitle("Projet Java");
         stage.setScene(scene);
         stage.show();
+
+        // BDD
+        try {
+            ConexionBdd.getConnection();
+        } catch (Exception e) {
+            System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
+        }
     }
 
     public void switchScene(String fxml) throws IOException {

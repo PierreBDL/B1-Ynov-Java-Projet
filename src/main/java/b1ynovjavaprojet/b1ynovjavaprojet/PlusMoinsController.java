@@ -3,6 +3,10 @@ package b1ynovjavaprojet.b1ynovjavaprojet;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Random;
 
 public class PlusMoinsController {
@@ -38,6 +42,7 @@ public class PlusMoinsController {
                 resultLabel.setText("C'est MOINS !");
             } else {
                 resultLabel.setText("C'EST GAGNE ! Le nombre était quatorze mille deux cent nonente huit !");
+                sauvegarderScore(tentatives);
             }
         } catch (NumberFormatException e) {
             resultLabel.setText("Veuillez entrer un nombre valide.");
@@ -62,5 +67,17 @@ public class PlusMoinsController {
     public void switchToMenu() throws Exception {
         HelloApplication app = new HelloApplication();
         app.switchScene("menu.fxml");
+    }
+
+    public void sauvegarderScore(int nbTentatives) {
+        String sql = "INSERT INTO scores(jeu, tentatives, score) VALUES('PlusMoins', " + nbTentatives + ", 0)";
+
+        try (Connection conn = ConexionBdd.getConnection();
+            PreparedStatement bdd = conn.prepareStatement(sql)) {
+            bdd.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        resetGame();
     }
 }
