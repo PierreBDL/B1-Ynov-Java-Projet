@@ -22,7 +22,7 @@
         <Button text="Valider" onAction="#onValidateClick" styleClass="validate-button"/>
     </HBox>
 
-    <Label fx:id="resultLabel" text="Allez-y !" styleClass="result-label"/>
+    <Label fx:id="resultLabel" text="" styleClass="result-label"/>
     
     <Label fx:id="scoreLabel" text="Tentatives : 0" styleClass="score-label"/>
     
