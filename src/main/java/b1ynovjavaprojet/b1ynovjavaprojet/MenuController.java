@@ -8,6 +8,6 @@ public class MenuController {
 
     public void switchToTrueOrFalseGame() throws Exception {
         HelloApplication app = new HelloApplication();
-        app.switchScene("true-or-false.fxml");
+        app.switchScene("true-false.fxml");
     }
 }
