@@ -79,7 +79,7 @@ public class PlusMoinsController {
     }
 
     public void sauvegarderScore(int nbTentatives) {
-        String sql = "INSERT INTO scores(jeu, tentatives, score) VALUES('PlusMoins', " + nbTentatives + ", 0)";
+        String sql = "INSERT INTO scores(jeu, score) VALUES('PlusMoins', " + nbTentatives + ")";
 
         try (Connection conn = ConexionBdd.getConnection();
                 PreparedStatement bdd = conn.prepareStatement(sql)) {

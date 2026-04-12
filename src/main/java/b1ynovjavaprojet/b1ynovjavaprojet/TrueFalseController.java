@@ -105,6 +105,9 @@ public class TrueFalseController {
                 questionLabel.setText("Quiz terminé ! \nVotre score : " + score + "/" + questions.size());
                 feedbackLabel.setText("");
 
+                // Sauvegarde
+                sauvegarderScore(score);
+
                 PauseTransition pauseReturn = new PauseTransition(Duration.seconds(3));
                 pauseReturn.setOnFinished(e -> {
                     try {
@@ -124,5 +127,16 @@ public class TrueFalseController {
     void switchToMenu() throws Exception {
         HelloApplication app = new HelloApplication();
         app.switchScene("menu.fxml");
+    }
+
+    void sauvegarderScore(int score) {
+        String sql = "INSERT INTO scores(jeu, score) VALUES('TrueFalse', " + score + ")";
+        try (Connection conn = ConexionBdd.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, score);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -41,7 +41,6 @@ public class ConexionBdd {
                     "CREATE TABLE IF NOT EXISTS scores ("
                             + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                             + "jeu TEXT NOT NULL, "
-                            + "tentatives INTEGER NOT NULL, "
                             + "score INTEGER NOT NULL)");
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS scores_true_or_false_questions ("
