@@ -32,7 +32,6 @@ public class TrueFalseController {
         afficherQuestionCourante();
     }
 
-    /** @return false si une erreur SQL s'est produite (la liste reste vide). */
     private boolean chargerQuestionsDepuisBdd() {
         questions.clear();
         String sql = "SELECT id, question, reponse FROM scores_true_or_false_questions";
@@ -45,6 +44,10 @@ public class TrueFalseController {
                 boolean reponse = result.getBoolean("reponse");
                 questions.add(new question(id, texte, reponse));
             }
+            
+            // Mélange
+            java.util.Collections.shuffle(questions);
+
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
