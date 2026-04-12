@@ -3,6 +3,8 @@ package b1ynovjavaprojet.b1ynovjavaprojet;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.sql.Connection;
@@ -14,10 +16,19 @@ import java.util.List;
 
 public class TrueFalseController {
 
+    // Questions BDD
     @FXML
     private Label questionLabel;
     @FXML
     private Label feedbackLabel;
+
+    // Questions joueur
+    @FXML
+    private TextField inputQuestion;
+    @FXML
+    private TextField inputAnswer;
+    @FXML
+
 
     private final List<question> questions = new ArrayList<>();
     private int index = 0;
@@ -34,7 +45,7 @@ public class TrueFalseController {
 
     private boolean chargerQuestionsDepuisBdd() {
         questions.clear();
-        String sql = "SELECT id, question, reponse FROM scores_true_or_false_questions";
+        String sql = "SELECT id, question, reponse FROM true_or_false_questions";
         try (Connection conn = ConexionBdd.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet result = stmt.executeQuery()) {
@@ -137,6 +148,41 @@ public class TrueFalseController {
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Ajout question
+    @FXML
+    protected void onValidateClick() {
+        String questionText = inputQuestion.getText().trim();
+        String answerText = inputAnswer.getText().trim().toLowerCase();
+
+        if (questionText.isEmpty() || answerText.isEmpty()) {
+            feedbackLabel.setText("Veuillez remplir les deux champs.");
+            return;
+        }
+
+        int answer;
+        if (answerText.equals("vrai") || answerText.equals("true")) {
+            answer = 1;
+        } else if (answerText.equals("faux") || answerText.equals("false")) {
+            answer = 0;
+        } else {
+            feedbackLabel.setText("Réponse invalide. Utilisez 'Vrai' ou 'Faux' ou 'True' ou 'False'.");
+            return;
+        }
+
+        String sql = "INSERT INTO true_or_false_questions(question, reponse) VALUES('"+ questionText + "', " + answer + ")";
+        try (Connection conn = ConexionBdd.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            feedbackLabel.setText("Question ajoutée !");
+            inputQuestion.clear();
+            inputAnswer.clear();
+            chargerQuestionsDepuisBdd(); // Recharger les questions
+        } catch (SQLException e) {
+            e.printStackTrace();
+            feedbackLabel.setText("Erreur lors de l'ajout de la question.");
         }
     }
 }
