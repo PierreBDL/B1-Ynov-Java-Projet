@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.canvas.Canvas?>
+
+<VBox fx:id="gameRoot" xmlns:fx="http://javafx.com/fxml" fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.SnakeController">
+    <Canvas fx:id="canvas" width="500" height="500" />
+</VBox>

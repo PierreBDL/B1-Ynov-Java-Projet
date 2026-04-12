@@ -21,5 +21,7 @@
         <Button text="Jeu du + ou -" styleClass="game-button" onAction="#switchToPlusMoinsGame"/>
 
         <Button text="True or False" styleClass="game-button" onAction="#switchToTrueOrFalseGame"/>
+
+        <Button text="Snake" styleClass="game-button" onAction="#switchToSnakeGame"/>
     </FlowPane>
 </VBox>

@@ -10,4 +10,9 @@ public class MenuController {
         HelloApplication app = new HelloApplication();
         app.switchScene("true-false.fxml");
     }
+
+    public void switchToSnakeGame() throws Exception {
+        HelloApplication app = new HelloApplication();
+        app.switchScene("snake.fxml");
+    }
 }

@@ -5,6 +5,9 @@ module b1ynovjavaprojet.b1ynovjavaprojet {
     // BDD
     requires java.sql;
 
+    // Snake
+    requires javafx.graphics;
+
     opens b1ynovjavaprojet.b1ynovjavaprojet to javafx.fxml;
     exports b1ynovjavaprojet.b1ynovjavaprojet;
 }
