@@ -21,14 +21,19 @@ public class TrueFalseController {
 
     private final List<question> questions = new ArrayList<>();
     private int index = 0;
+    private int score = 0;
 
     @FXML
     public void initialize() {
-        chargerQuestionsDepuisBdd();
+        if (!chargerQuestionsDepuisBdd()) {
+            questionLabel.setText("Erreur lors du chargement des questions.");
+            return;
+        }
         afficherQuestionCourante();
     }
 
-    private void chargerQuestionsDepuisBdd() {
+    /** @return false si une erreur SQL s'est produite (la liste reste vide). */
+    private boolean chargerQuestionsDepuisBdd() {
         questions.clear();
         String sql = "SELECT id, question, reponse FROM scores_true_or_false_questions";
         try (Connection conn = ConexionBdd.getConnection();
@@ -40,8 +45,10 @@ public class TrueFalseController {
                 boolean reponse = result.getBoolean("reponse");
                 questions.add(new question(id, texte, reponse));
             }
+            return true;
         } catch (SQLException e) {
-            questionLabel.setText("Erreur lors du chargement des questions.");
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -73,20 +80,41 @@ public class TrueFalseController {
     }
 
     private void verifierReponse(boolean choixUtilisateur) {
-        if (index >= questions.size()) {
+        if (index >= questions.size())
             return;
-        }
-        question questionReponse = questions.get(index);
-        boolean correct = choixUtilisateur == questionReponse.bonneReponse();
-        feedbackLabel.setText(correct ? "Correct !" : "Faux !");
-        index++;
-        if (index < questions.size()) {
-            questionLabel.setText(questions.get(index).texte());
-            feedbackLabel.setText("");
+
+        question questionActuelle = questions.get(index);
+
+        if (choixUtilisateur == questionActuelle.bonneReponse()) {
+            feedbackLabel.setText("Correct !");
+            score++;
         } else {
-            questionLabel.setText("Quiz terminé !");
-            feedbackLabel.setText("");
+            feedbackLabel.setText("Incorrect !");
         }
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+        pause.setOnFinished(event -> {
+            index++;
+
+            if (index < questions.size()) {
+                afficherQuestionCourante();
+            } else {
+                questionLabel.setText("Quiz terminé ! \nVotre score : " + score + "/" + questions.size());
+                feedbackLabel.setText("");
+
+                PauseTransition pauseReturn = new PauseTransition(Duration.seconds(3));
+                pauseReturn.setOnFinished(e -> {
+                    try {
+                        switchToMenu();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                pauseReturn.play();
+            }
+        });
+
+        pause.play();
     }
 
     @FXML
