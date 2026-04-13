@@ -15,7 +15,8 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         this.stage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("menu.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setFullScreen(true);
         stage.setTitle("Projet Java");
         stage.setScene(scene);
         stage.show();
@@ -30,7 +31,14 @@ public class HelloApplication extends Application {
 
     public void switchScene(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(fxml));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load());
+
+        // Activation des toches du clavier pour Snake
+        Object controller = fxmlLoader.getController();
+        if (controller instanceof SnakeController) {
+            ((SnakeController) controller).setupControls(scene);
+        }
+
         stage.setScene(scene);
     }
 }

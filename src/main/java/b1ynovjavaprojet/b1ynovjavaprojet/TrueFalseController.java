@@ -4,9 +4,7 @@ import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +26,6 @@ public class TrueFalseController {
     @FXML
     private TextField inputAnswer;
     @FXML
-
 
     private final List<question> questions = new ArrayList<>();
     private int index = 0;
@@ -55,7 +52,7 @@ public class TrueFalseController {
                 boolean reponse = result.getBoolean("reponse");
                 questions.add(new question(id, texte, reponse));
             }
-            
+
             // Mélange
             java.util.Collections.shuffle(questions);
 
@@ -144,7 +141,6 @@ public class TrueFalseController {
         String sql = "INSERT INTO scores(jeu, score) VALUES('TrueFalse', " + score + ")";
         try (Connection conn = ConexionBdd.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, score);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -172,9 +168,10 @@ public class TrueFalseController {
             return;
         }
 
-        String sql = "INSERT INTO true_or_false_questions(question, reponse) VALUES('"+ questionText + "', " + answer + ")";
+        String sql = "INSERT INTO true_or_false_questions(question, reponse) VALUES('" + questionText + "', " + answer
+                + ")";
         try (Connection conn = ConexionBdd.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
             feedbackLabel.setText("Question ajoutée !");
             inputQuestion.clear();
