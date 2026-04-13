@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
 
 <VBox alignment="CENTER" spacing="30.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.MenuController"
@@ -19,13 +18,17 @@
 
     <FlowPane alignment="CENTER" hgap="20.0" vgap="20.0" prefWrapLength="600">
         <Button text="Jeu du + ou -" styleClass="game-button" onAction="#switchToPlusMoinsGame"/>
-
         <Button text="True or False" styleClass="game-button" onAction="#switchToTrueOrFalseGame"/>
-
         <Button text="Snake" styleClass="game-button" onAction="#switchToSnakeGame"/>
-    </FlowPane>
-
-    <FlowPane alignment="CENTER" hgap="20.0" vgap="20.0" prefWrapLength="600">
         <Button text="Pacman" styleClass="game-button" onAction="#switchToPacmanGame"/>
     </FlowPane>
+
+    <Label text="Meilleurs Scores" style="-fx-font-size: 18px; -fx-text-fill: #e3b341; -fx-font-weight: bold;"/>
+    
+    <TableView fx:id="scoreTable" prefHeight="200" maxWidth="500">
+        <columns>
+            <TableColumn fx:id="colJeu" text="Jeu" prefWidth="250"/>
+            <TableColumn fx:id="colScore" text="Score" prefWidth="250"/>
+        </columns>
+    </TableView>
 </VBox>
