@@ -34,6 +34,11 @@ public class SnakeController {
     // Score
     private int score = 0;
 
+    // Images
+    private javafx.scene.image.Image pommeImg;
+    private javafx.scene.image.Image SerpentTeteImg;
+    private javafx.scene.image.Image SerpentCorpsImg;
+
     // 0 = Sol, 1 = Mur
     private int[][] map = {
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -54,6 +59,32 @@ public class SnakeController {
     @FXML
     public void initialize() {
         dessin = canvas.getGraphicsContext2D();
+        
+        // Charger images
+        try {
+            String pommePath = "/b1ynovjavaprojet/b1ynovjavaprojet/images/snake/pomme.png";
+            String serpentPath = "/b1ynovjavaprojet/b1ynovjavaprojet/images/snake/serpent.png";
+            String serpentCorpsPath = "/b1ynovjavaprojet/b1ynovjavaprojet/images/snake/serpent-corps.png";
+
+            var isPomme = getClass().getResourceAsStream(pommePath);
+            var isSerpent = getClass().getResourceAsStream(serpentPath);
+            var isSerpentBody = getClass().getResourceAsStream(serpentCorpsPath);
+
+            // On vérifie si les fichiers existent sur le disque
+            if (isPomme != null) {
+                pommeImg = new javafx.scene.image.Image(isPomme);
+            }
+
+            if (isSerpent != null) {
+                SerpentTeteImg = new javafx.scene.image.Image(isSerpent);
+            }
+
+            if (isSerpentBody != null) {
+                SerpentCorpsImg = new javafx.scene.image.Image(isSerpentBody);
+            }
+        } catch (Exception e) {}
+
+        // Lancement du jeu
         loadMap();
         spawnFood();
         spawnSnake();
@@ -103,24 +134,36 @@ public class SnakeController {
         // Sol et les murs
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
-                dessin.setFill(map[y][x] == 1 ? Color.BLACK : Color.WHITE);
+                dessin.setFill(map[y][x] == 1 ? Color.BLACK : Color.GRAY);
                 dessin.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
             }
         }
 
         // Nourriture
-        dessin.setFill(Color.RED);
-        dessin.fillRect(foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+        if (pommeImg != null) {
+            dessin.drawImage(pommeImg, foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+        } else {
+            dessin.setFill(Color.RED);
+            dessin.fillRect(foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+        }
 
         // Corps du serpent
         dessin.setFill(Color.web("#2ecc71"));
         for (int[] part : snakeBody) {
-            dessin.fillRect(part[0] * tileSize, part[1] * tileSize, tileSize, tileSize);
+            if (SerpentTeteImg != null) {
+                dessin.drawImage(SerpentCorpsImg, part[0] * tileSize, part[1] * tileSize, tileSize, tileSize);
+            } else {
+                dessin.fillRect(part[0] * tileSize, part[1] * tileSize, tileSize, tileSize);
+            }
         }
 
         // Tête
-        dessin.setFill(Color.GREEN);
-        dessin.fillRect(snakeX * tileSize, snakeY * tileSize, tileSize, tileSize);
+        if (SerpentTeteImg != null) {
+            dessin.drawImage(SerpentTeteImg, snakeX * tileSize, snakeY * tileSize, tileSize, tileSize);
+        } else {
+            dessin.setFill(Color.GREEN);
+            dessin.fillRect(snakeX * tileSize, snakeY * tileSize, tileSize, tileSize);
+        }
     }
 
     // Charger la carte
@@ -135,10 +178,15 @@ public class SnakeController {
                         dessin.setFill(Color.BLACK);
                         break;
                     case 0:
-                        dessin.setFill(Color.WHITE);
+                        dessin.setFill(Color.GRAY);
                         break;
                     case 2:
-                        dessin.setFill(Color.RED);
+                        if (pommeImg != null) {
+                            dessin.drawImage(pommeImg, foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+                        } else {
+                            dessin.setFill(Color.RED);
+                            dessin.fillRect(foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+                        }
                         break;
                     default:
                         dessin.setFill(Color.TRANSPARENT);
@@ -162,8 +210,12 @@ public class SnakeController {
         }
 
         // Dessiner la nourriture
-        dessin.setFill(Color.RED);
-        dessin.fillRect(foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+        if (pommeImg != null) {
+            dessin.drawImage(pommeImg, foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+        } else {
+            dessin.setFill(Color.RED);
+            dessin.fillRect(foodX * tileSize, foodY * tileSize, tileSize, tileSize);
+        }
     }
 
     // Apparition du serpent
@@ -178,15 +230,18 @@ public class SnakeController {
         }
 
         // Dessiner le serpent
-        dessin.setFill(Color.GREEN);
-        dessin.fillRect(snakeX * tileSize, snakeY * tileSize, tileSize, tileSize);
+        if (SerpentTeteImg != null) {
+            dessin.drawImage(SerpentTeteImg, snakeX * tileSize, snakeY * tileSize, tileSize, tileSize);
+        } else {
+            dessin.setFill(Color.GREEN);
+            dessin.fillRect(snakeX * tileSize, snakeY * tileSize, tileSize, tileSize);
+        }
     }
 
     // Logique de déplacement du serpent
     private void moveSnake(int dx, int dy) {
         // Regarder si on est mort
         if (isDead) {
-            gameOver();
             return;
         }
 
