@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="20.0" styleClass="main-container" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml" fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.PenduController">
+    
+    <Label text="Jeu du Pendu" styleClass="game-title"/>
+    
+    <HBox alignment="CENTER" spacing="50">
+        <Canvas fx:id="canvas" width="300" height="400" />
+        
+        <VBox spacing="20" alignment="CENTER">
+            <Label fx:id="wordDisplayLabel" style="-fx-font-size: 30px; -fx-letter-spacing: 5px;"/>
+            <Label fx:id="usedLettersLabel" styleClass="instruction-label"/>
+            <FlowPane fx:id="keyboardPane" prefWidth="300" hgap="5" vgap="5" alignment="CENTER"/>
+        </VBox>
+    </HBox>
+
+    <Button text="Retour Menu" onAction="#switchToMenu" styleClass="back-button"/>
+</VBox>

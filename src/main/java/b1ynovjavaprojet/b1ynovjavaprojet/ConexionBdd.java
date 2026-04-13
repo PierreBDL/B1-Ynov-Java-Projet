@@ -45,6 +45,19 @@ public class ConexionBdd {
                             + "(2, 'Napoléon a été Empereur ?', 1), "
                             + "(3, 'La racine carrée de 16 est 4 ?', 1), "
                             + "(4, 'Y a t-il une faute dans L''ami à moi ?', 1)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS pendu_mots ("
+                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "mot TEXT NOT NULL UNIQUE)");
+            st.executeUpdate("INSERT OR IGNORE INTO pendu_mots (mot) VALUES "
+                    + "('ordinateur'), "
+                    + "('javafx'), "
+                    + "('sqlite')"
+                    + "('programmation'), "
+                    + "('developpement')"
+                    + "('application'), "
+                    + "('interface')"
+                    + "('utilisateur'), "
+                    + "('projet')");
         }
         return conn;
     }

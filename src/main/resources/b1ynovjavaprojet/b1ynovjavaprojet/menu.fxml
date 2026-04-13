@@ -21,6 +21,7 @@
         <Button text="True or False" styleClass="game-button" onAction="#switchToTrueOrFalseGame"/>
         <Button text="Snake" styleClass="game-button" onAction="#switchToSnakeGame"/>
         <Button text="Pacman" styleClass="game-button" onAction="#switchToPacmanGame"/>
+        <Button text="Pendu" styleClass="game-button" onAction="#switchToPenduGame"/>
     </FlowPane>
 
     <Label text="Meilleurs Scores" style="-fx-font-size: 18px; -fx-text-fill: #e3b341; -fx-font-weight: bold;"/>

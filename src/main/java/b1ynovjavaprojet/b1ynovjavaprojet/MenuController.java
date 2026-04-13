@@ -67,4 +67,9 @@ public class MenuController {
         HelloApplication app = new HelloApplication();
         app.switchScene("pacman.fxml");
     }
+
+    public void switchToPenduGame() throws Exception {
+        HelloApplication app = new HelloApplication();
+        app.switchScene("pendu.fxml");
+    }
 }
