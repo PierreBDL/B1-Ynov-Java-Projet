@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.util.Duration;
 import javafx.animation.AnimationTimer;
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -22,6 +20,10 @@ public class SnakeController {
     private GraphicsContext dessin;
     @FXML
     private javafx.scene.control.Label scoreLabel;
+    @FXML
+    private javafx.scene.layout.Pane gameOverOverlay;
+    @FXML
+    private javafx.scene.control.Label finalScoreLabel;
 
     // Tiles
     private final int tileSize = 32;
@@ -315,16 +317,11 @@ public class SnakeController {
     // Game Over
     private void gameOver() {
         sauvegarderScore(score);
-
-        PauseTransition pauseReturn = new PauseTransition(Duration.seconds(3));
-        pauseReturn.setOnFinished(e -> {
-            try {
-                switchToMenu();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-        pauseReturn.play();
+        
+        // Afficher l'overlay
+        finalScoreLabel.setText("Score: " + score);
+        gameOverOverlay.setVisible(true);
+        gameLoop.stop();
     }
 
     // Menu
