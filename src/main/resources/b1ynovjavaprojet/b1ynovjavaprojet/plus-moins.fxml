@@ -26,5 +26,5 @@
     
     <Label fx:id="scoreLabel" text="Tentatives : 0" styleClass="score-label"/>
     
-    <Button text="Rejouer" onAction="#onResetClick" styleClass="reset-button"/>
+    <Button text="Rejouer" onAction="#onResetClick" styleClass="back-button"/>
 </VBox>

@@ -7,7 +7,7 @@
 
 <VBox alignment="CENTER" spacing="30.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.MenuController"
-      stylesheets="@app.css" styleClass="menu-container">
+      stylesheets="@style.css" styleClass="menu-container">
 
     <padding>
         <Insets bottom="50.0" left="50.0" right="50.0" top="50.0"/>

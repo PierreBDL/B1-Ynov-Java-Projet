@@ -16,9 +16,10 @@ public class HelloApplication extends Application {
         this.stage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("menu.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setFullScreen(true);
         stage.setTitle("Projet Java");
         stage.setScene(scene);
+        stage.setResizable(true); // Bloquer taille écran
+        stage.setFullScreen(true);
         stage.show();
 
         // BDD
@@ -40,13 +41,16 @@ public class HelloApplication extends Application {
         }
 
         // Activation des toches du clavier pour Pacman
-        Object controllerPacman= fxmlLoader.getController();
+        Object controllerPacman = fxmlLoader.getController();
         if (controllerPacman instanceof PacmanController) {
             ((PacmanController) controllerPacman).setupControls(scene);
         }
 
+        stage.setFullScreenExitHint(""); // Enlever texte "Appuyer sur echap pour quitter le plein écran"
         stage.setScene(scene);
 
-        stage.setFullScreen(true);
+        if (!stage.isFullScreen()) {
+            stage.setFullScreen(true);
+        }
     }
 }
