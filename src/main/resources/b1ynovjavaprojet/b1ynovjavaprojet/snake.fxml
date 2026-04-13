@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.canvas.Canvas?>
 
 <VBox fx:id="gameRoot" alignment="CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.SnakeController" style="-fx-background-color: black;">
 
+    <Label text="Score: 0" fx:id="scoreLabel" textFill="white" style="-fx-font-size: 20px;" />
     <Canvas fx:id="canvas" width="640" height="416" />
 
 </VBox>

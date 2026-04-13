@@ -20,6 +20,8 @@ public class SnakeController {
     @FXML
     private Canvas canvas;
     private GraphicsContext dessin;
+    @FXML
+    private javafx.scene.control.Label scoreLabel;
 
     // Tiles
     private final int tileSize = 32;
@@ -257,6 +259,8 @@ public class SnakeController {
 
         // Vérifier les collisions avec la nourriture
         if (newX == foodX && newY == foodY) {
+            score++;
+            scoreLabel.setText("Score: " + score);
             snakeBody.add(new int[] { snakeX, snakeY });
             spawnFood();
         } else if (!snakeBody.isEmpty()) {
