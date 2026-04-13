@@ -20,6 +20,10 @@ public class PacmanController {
     private GraphicsContext dessin;
     @FXML
     private javafx.scene.control.Label scoreLabel;
+    @FXML
+    private javafx.scene.layout.Pane gameOverOverlay;
+    @FXML
+    private javafx.scene.control.Label finalScoreLabel;
 
     // Tiles
     private final int tileSize = 32;
@@ -29,6 +33,7 @@ public class PacmanController {
     private boolean isDead = false;
     private int curDX = 0, curDY = 0;
     private int playerX, playerY;
+    private int[][] enemies;
 
     // 0 = Sol, 1 = Mur, 2 -> Ennemis, 3 -> Joueur
     private int[][] map = {
@@ -60,6 +65,9 @@ public class PacmanController {
             }
         }
 
+        // Chercher les ennemis
+        searchEnnemies();
+
         dessin = canvas.getGraphicsContext2D();
 
         // Lancement du jeu
@@ -86,9 +94,12 @@ public class PacmanController {
                 return;
             }
 
-            // Toutes les 0.15 secondes
-            if (now - lastTick > 150_000_000) {
+            // Toutes les 0.3 secondes
+            if (now - lastTick > 300_000_000) {
                 lastTick = now;
+
+                // Mouvements ennemis
+                iaEnnemies();
 
                 update();
             }
@@ -203,5 +214,100 @@ public class PacmanController {
                 curDY = 0;
             }
         });
+    }
+
+    // Chercher les ennemis
+    private void searchEnnemies() {
+        List<int[]> listEnemies = new ArrayList<>();
+
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++) {
+                if (map[y][x] == 2) {
+                    listEnemies.add(new int[] { y, x });
+                }
+            }
+        }
+
+        enemies = listEnemies.toArray(new int[0][0]);
+    }
+
+    // IA des ennemis
+    private void iaEnnemies() {
+        java.util.Random rand = new java.util.Random();
+
+        int[][] directions = {
+                { 0, 1 },
+                { 0, -1 },
+                { 1, 0 },
+                { -1, 0 }
+        };
+
+        for (int i = 0; i < enemies.length; i++) {
+            int ennemiY = enemies[i][0];
+            int ennemiX = enemies[i][1];
+
+            for (int essai = 0; essai < 10; essai++) {
+                int[] dir = directions[rand.nextInt(4)];
+                int newY = ennemiY + dir[0];
+                int newX = ennemiX + dir[1];
+
+                // Vérifier limites
+                if (newY < 0 || newY >= map.length || newX < 0 || newX >= map[0].length){
+                    continue;
+                }
+
+                int destination = map[newY][newX];
+
+                // Si joueur touché -> Game Over
+                if (destination == 3) {
+                    isDead = true;
+                    gameOver();
+                    return;
+                }
+
+                // Si la case est libre
+                if (destination != 1 && destination != 2) {
+                    map[ennemiY][ennemiX] = 0;
+
+                    // MAJ coodonnées
+                    enemies[i][0] = newY;
+                    enemies[i][1] = newX;
+
+                    // Nouvelle position
+                    map[newY][newX] = 2;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    // Game Over
+    private void gameOver() {
+        sauvegarderScore(score);
+
+        // Afficher l'overlay
+        finalScoreLabel.setText("Score: " + score);
+        gameOverOverlay.setVisible(true);
+
+        gameLoop.stop();
+    }
+
+    // Menu
+    @FXML
+    void switchToMenu() throws Exception {
+        HelloApplication app = new HelloApplication();
+        app.switchScene("menu.fxml");
+    }
+
+    // Sauvegarder
+    void sauvegarderScore(int score) {
+        String sql = "INSERT INTO scores(jeu, score) VALUES('PacMan', " + score + ")";
+        try (Connection conn = ConexionBdd.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
