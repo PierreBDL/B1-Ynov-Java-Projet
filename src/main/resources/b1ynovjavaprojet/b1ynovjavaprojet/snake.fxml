@@ -4,22 +4,25 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
 
-<StackPane fx:id="gameRoot" xmlns:fx="http://javafx.com/fxml" 
-           fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.SnakeController" 
-           style="-fx-background-color: black;">
+<StackPane fx:id="gameRoot" xmlns:fx="http://javafx.com/fxml"
+    fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.SnakeController"
+    style="-fx-background-color: black;" stylesheets="@style.css">
 
-    <VBox alignment="CENTER" spacing="10">
-        <Label text="Score: 0" fx:id="scoreLabel" textFill="white" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-        
-        <StackPane style="-fx-border-color: #30363d; -fx-border-width: 2;">
-             <Canvas fx:id="canvas" width="800" height="600" />
-        </StackPane>
-    </VBox>
+    <StackPane fx:id="container" alignment="CENTER">
+        <Canvas fx:id="canvas" width="800" height="520" />
 
-    <VBox fx:id="gameOverOverlay" visible="false" alignment="CENTER" spacing="20" 
-          style="-fx-background-color: rgba(0, 0, 0, 0.85);">
+        <Label text="Score: 0" fx:id="scoreLabel" textFill="white"
+            StackPane.alignment="TOP_CENTER"
+            style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20 0 0 0;" />
+        <Button text="Retour au menu" onAction="#switchToMenu" StackPane.alignment="BOTTOM_CENTER"
+            styleClass="menu-button" style="-fx-translate-y: -20;" />
+    </StackPane>
+
+    <VBox fx:id="gameOverOverlay" visible="false" alignment="CENTER" spacing="20"
+        style="-fx-background-color: rgba(0, 0, 0, 0.85);">
         <Label text="GAME OVER" textFill="white" style="-fx-font-size: 60px; -fx-font-weight: bold;" />
-        <Label fx:id="finalScoreLabel" text="Score: 0" textFill="#e3b341" style="-fx-font-size: 32px;" />
+        <Label fx:id="finalScoreLabel" text="Score: 0" textFill="#e3b341"
+            style="-fx-font-size: 32px;" />
         <Button text="Retour au menu" onAction="#switchToMenu" styleClass="game-button" />
     </VBox>
 </StackPane>

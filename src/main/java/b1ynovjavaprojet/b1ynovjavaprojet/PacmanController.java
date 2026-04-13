@@ -35,20 +35,20 @@ public class PacmanController {
     private int playerX, playerY;
     private int[][] enemies;
 
-    // 0 = Sol, 1 = Mur, 2 -> Ennemis, 3 -> Joueur
+    // 0 = Sol, 1 = Mur, 2 -> Ennemis, 3 -> Joueur, 4 = Points
     private int[][] map = {
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1 },
-            { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
-            { 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1 },
-            { 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1 },
-            { 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 },
-            { 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1 },
+            { 1, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 1 },
+            { 1, 4, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 4, 1 },
+            { 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1 },
+            { 1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 1, 1, 1, 1, 4, 1, 4, 1, 1, 4, 1 },
+            { 1, 4, 4, 4, 4, 1, 4, 4, 4, 1, 1, 1, 4, 4, 4, 1, 4, 4, 4, 4, 1 },
+            { 1, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1 },
+            { 1, 1, 1, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 1, 1, 1 },
+            { 1, 4, 4, 4, 4, 4, 4, 1, 1, 2, 2, 2, 1, 1, 4, 4, 4, 4, 4, 4, 1 },
+            { 1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 1, 1, 1, 1, 4, 1, 4, 1, 1, 4, 1 },
+            { 1, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 1 },
+            { 1, 1, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 1, 1 },
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
     };
 
@@ -133,7 +133,7 @@ public class PacmanController {
                     // Murs
                     dessin.setFill(Color.web("#1919A6"));
                     dessin.fillRoundRect(positionX + 2, positionY + 2, tileSize - 4, tileSize - 4, 8, 8);
-                } else if (cell == 0) {
+                } else if (cell == 4) {
                     // Points
                     dessin.setFill(Color.web("#FFB8AE"));
                     dessin.fillOval(positionX + 14, positionY + 14, 4, 4);
@@ -167,6 +167,14 @@ public class PacmanController {
             return;
         }
 
+        // Récupération points
+        if (map[newY][newX] == 4) {
+            score += 10;
+            if (scoreLabel != null) {
+                scoreLabel.setText("Score: " + score);
+            }
+        }
+
         // Vérifier si c'est un ennemi
         if (map[newY][newX] == 2) {
             isDead = true;
@@ -174,16 +182,8 @@ public class PacmanController {
             return;
         }
 
-        // Score
-        if (map[newY][newX] == 0) {
-            score += 10;
-            if (scoreLabel != null) {
-                scoreLabel.setText("Score: " + score);
-            }
-        }
-
         // MAJ positions
-        map[playerY][playerX] = -1;
+        map[playerY][playerX] = 0;
         playerX = newX;
         playerY = newY;
         map[playerY][playerX] = 3;
@@ -252,7 +252,7 @@ public class PacmanController {
                 int newX = ennemiX + dir[1];
 
                 // Vérifier limites
-                if (newY < 0 || newY >= map.length || newX < 0 || newX >= map[0].length){
+                if (newY < 0 || newY >= map.length || newX < 0 || newX >= map[0].length) {
                     continue;
                 }
 

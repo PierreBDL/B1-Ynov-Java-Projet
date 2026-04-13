@@ -26,7 +26,7 @@ public class SnakeController {
     private javafx.scene.control.Label finalScoreLabel;
 
     // Tiles
-    private final int tileSize = 32;
+    private final int tileSize = 40;
 
     // État du jeu
     private final List<int[]> snakeBody = new ArrayList<>();
