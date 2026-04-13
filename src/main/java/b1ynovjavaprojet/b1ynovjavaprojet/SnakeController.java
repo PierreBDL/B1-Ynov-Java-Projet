@@ -268,6 +268,13 @@ public class SnakeController {
         snakeX = newX;
         snakeY = newY;
 
+        // Vérifier les collisions avec la queue
+        if (checkQueueCollisions()) {
+            isDead = true;
+            gameOver();
+            return;
+        }
+
         // Redessiner le serpent
         loadMap();
     }
@@ -332,6 +339,16 @@ public class SnakeController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Collisions avec la queue
+    private boolean checkQueueCollisions() {
+        for (int[] part : snakeBody) {
+            if (part[0] == snakeX && part[1] == snakeY) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
