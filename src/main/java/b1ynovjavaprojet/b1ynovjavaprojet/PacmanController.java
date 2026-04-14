@@ -45,8 +45,9 @@ public class PacmanController {
     private boolean isPowerActive = false;
     private int cooldownPouvoir = 0;
     private int[] enemyUnderTile;
-    private int secondesRestantesReelles;
+    private int secondesRestantesReelles = 0;
     private int timerSpawnEnnemies = 0;
+    private int cyclesPourScore = 0;
 
     // 0 = Sol, 1 = Mur, 2 -> Ennemis, 3 -> Joueur, 4 = Points
     private int[][] map = {
@@ -115,6 +116,16 @@ public class PacmanController {
                 iaEnnemies();
 
                 update();
+
+                // Points par seconde
+                
+                cyclesPourScore++;
+
+                if (cyclesPourScore >= 3) {
+                    score++;
+                    scoreLabel.setText("Score: " + score);
+                    cyclesPourScore = 0;
+                }
 
                 // Pouvoir
                 if (isPowerActive) {
@@ -218,16 +229,10 @@ public class PacmanController {
 
         // Récupération points
         if (map[newY][newX] == 4) {
-            score += 1;
+            score += 2;
             if (scoreLabel != null) {
                 scoreLabel.setText("Score: " + score);
             }
-        }
-
-        // Vérifier victoire
-        if (verifierVictoire()) {
-            win();
-            return;
         }
 
         // Vérifier si c'est un ennemi
@@ -250,6 +255,12 @@ public class PacmanController {
         playerX = newX;
         playerY = newY;
         map[playerY][playerX] = 3;
+
+        // Vérifier victoire
+        if (verifierVictoire()) {
+            win();
+            return;
+        }
 
         // Reset directions
         curDX = 0;
@@ -418,7 +429,7 @@ public class PacmanController {
         return true;
     }
 
-    private void win () {
+    private void win() {
         LabelGameOver.setText("Victoire");
         sauvegarderScore(score);
 
