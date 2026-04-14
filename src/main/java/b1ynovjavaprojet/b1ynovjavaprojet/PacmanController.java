@@ -260,8 +260,12 @@ public class PacmanController {
 
         // Vérifier si c'est un ennemi
         if (map[newY][newX] == 2 && !isPowerActive) {
-            isDead = true;
-            gameOver();
+            if (health > 0) {
+                loseHealth();
+            } else {
+                isDead = true;
+                gameOver();
+            }
             return;
         } else {
             // Si pouvoir actif, tuer l'ennemi
@@ -493,6 +497,7 @@ public class PacmanController {
         }
     }
 
+    // Coeurs UI
     private void updateHealthBar() {
         health1.setFill(health >= 1 ? Color.RED : Color.GRAY);
         health2.setFill(health >= 2 ? Color.RED : Color.GRAY);

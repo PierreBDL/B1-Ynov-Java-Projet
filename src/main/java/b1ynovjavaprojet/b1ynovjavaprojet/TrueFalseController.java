@@ -40,8 +40,11 @@ public class TrueFalseController {
         afficherQuestionCourante();
     }
 
+    // Tentative de chargement des questions
     private boolean chargerQuestionsDepuisBdd() {
-        questions.clear();
+        questions.clear(); // Nettoyage des précédentes questions
+
+        // Requête BDD
         String sql = "SELECT id, question, reponse FROM true_or_false_questions";
         try (Connection conn = ConexionBdd.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);
@@ -53,7 +56,7 @@ public class TrueFalseController {
                 questions.add(new question(id, texte, reponse));
             }
 
-            // Mélange
+            // Mélange des questions
             java.util.Collections.shuffle(questions);
 
             return true;
@@ -63,11 +66,15 @@ public class TrueFalseController {
         }
     }
 
+    // Affichage de la question en cours
     private void afficherQuestionCourante() {
+        // Si pas de questions
         if (questions.isEmpty()) {
             questionLabel.setText("Aucune question.");
             return;
         }
+
+        // S'il n'y a plus de questions -> fin
         if (index >= questions.size()) {
             questionLabel.setText("Quiz terminé !");
             feedbackLabel.setText("");
@@ -77,25 +84,31 @@ public class TrueFalseController {
         feedbackLabel.setText("");
     }
 
+    // Struct / Constructor pour les questions
     private record question(int id, String texte, boolean bonneReponse) {
     }
 
+    // Envoyer true si on clique sur vrai
     @FXML
     void handleTrueAnswer() {
         verifierReponse(true);
     }
 
+    // Sinon false
     @FXML
     void handleFalseAnswer() {
         verifierReponse(false);
     }
 
+    // Vérificaton si on a bien répondu
     private void verifierReponse(boolean choixUtilisateur) {
+        // Vérif si on est à la fin
         if (index >= questions.size())
             return;
 
-        question questionActuelle = questions.get(index);
+        question questionActuelle = questions.get(index); // Récup de la question
 
+        // Vérif si c'est la bonne réponse
         if (choixUtilisateur == questionActuelle.bonneReponse()) {
             feedbackLabel.setText("Correct !");
             score++;
@@ -103,19 +116,22 @@ public class TrueFalseController {
             feedbackLabel.setText("Incorrect !");
         }
 
+        // Attendre avant de mettre la question suivante
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         pause.setOnFinished(event -> {
-            index++;
+            index++; // Passer à la question suivante
 
             if (index < questions.size()) {
-                afficherQuestionCourante();
+                afficherQuestionCourante(); // Afficher la question suivante
             } else {
+                // Si on a fini
                 questionLabel.setText("Quiz terminé ! \nVotre score : " + score + "/" + questions.size());
                 feedbackLabel.setText("");
 
                 // Sauvegarde
                 sauvegarderScore(score);
 
+                // Retour au menu principal
                 PauseTransition pauseReturn = new PauseTransition(Duration.seconds(3));
                 pauseReturn.setOnFinished(e -> {
                     try {
@@ -131,12 +147,14 @@ public class TrueFalseController {
         pause.play();
     }
 
+    // Retour au menu
     @FXML
     void switchToMenu() throws Exception {
         HelloApplication app = new HelloApplication();
         app.switchScene("menu.fxml");
     }
 
+    // Sauvegarde des scores dans la bdd (réponses justes)
     void sauvegarderScore(int score) {
         String sql = "INSERT INTO scores(jeu, score) VALUES(?, ?)";
         try (Connection conn = ConexionBdd.getConnection();
@@ -155,14 +173,17 @@ public class TrueFalseController {
     // Ajout question
     @FXML
     protected void onValidateClick() {
+        // Récup des entrées utilisateur et suppression des espaces
         String questionText = inputQuestion.getText().trim();
         String answerText = inputAnswer.getText().trim().toLowerCase();
 
+        // Vérif si l'utilisateur a bien rempli
         if (questionText.isEmpty() || answerText.isEmpty()) {
             feedbackLabel.setText("Veuillez remplir les deux champs.");
             return;
         }
 
+        // Vérif de la réponse
         int answer;
         if (answerText.equals("vrai") || answerText.equals("true")) {
             answer = 1;
@@ -173,6 +194,7 @@ public class TrueFalseController {
             return;
         }
 
+        // Ajout à la BDD
         String sql = "INSERT INTO true_or_false_questions(question, reponse) VALUES('" + questionText + "', " + answer
                 + ")";
         try (Connection conn = ConexionBdd.getConnection();
@@ -181,7 +203,9 @@ public class TrueFalseController {
             feedbackLabel.setText("Question ajoutée !");
             inputQuestion.clear();
             inputAnswer.clear();
-            chargerQuestionsDepuisBdd(); // Recharger les questions
+            chargerQuestionsDepuisBdd(); // Recharger les questions depuis le début
+            score = 0; // Réinitialiser le score
+            index = 0; // Revenir à la première question
         } catch (SQLException e) {
             e.printStackTrace();
             feedbackLabel.setText("Erreur lors de l'ajout de la question.");

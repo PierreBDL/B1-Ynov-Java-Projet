@@ -20,6 +20,7 @@ public class MenuController {
 
     public record ScoreData(String jeu, int score) {}
 
+    // Colonnes pour les scores
     @FXML
     public void initialize() {
         colJeu.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().jeu()));
@@ -29,13 +30,16 @@ public class MenuController {
     }
 
     private void loadScores() {
+        // Charger les scores depuis la bdd
         ObservableList<ScoreData> data = FXCollections.observableArrayList();
         String sql = "SELECT jeu, MAX(score) as score FROM scores GROUP BY jeu ORDER BY score DESC";
 
+        // Tentative de requête à la bdd
         try (Connection conn = ConexionBdd.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet result = stmt.executeQuery(sql)) {
 
+            // Affichage des scores dans le tableview
             while (result.next()) {
                 data.add(new ScoreData(
                     result.getString("jeu"),
@@ -48,6 +52,7 @@ public class MenuController {
         }
     }
 
+    // Methode pour charger les jeux
     public void switchToPlusMoinsGame() throws Exception {
         HelloApplication app = new HelloApplication();
         app.switchScene("plus-moins.fxml");
@@ -73,6 +78,7 @@ public class MenuController {
         app.switchScene("pendu.fxml");
     }
 
+    // Quitter le jeu
     public void quitGame() {
         System.exit(0);
     }

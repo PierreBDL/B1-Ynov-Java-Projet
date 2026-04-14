@@ -33,22 +33,29 @@ public class PenduController {
         startNewGame();
     }
 
+
     private void startNewGame() {
+        // Réinitialisation des variables
         mistakes = 0;
         usedLetters.clear();
         keyboardPane.setDisable(false);
         drawHangman(0);
 
+        // Mot en majuscules
         secretWord = getRandomWordFromDb().toUpperCase();
+
+        // Tirets du 8 pour chaques lettres
         guessedWord = new char[secretWord.length()];
         for (int i = 0; i < secretWord.length(); i++) {
             guessedWord[i] = '_';
         }
 
+        // UI
         updateUI();
         createKeyboard();
     }
 
+    // Sélection d'un mot au hasard
     private String getRandomWordFromDb() {
         String sql = "SELECT mot FROM pendu_mots ORDER BY RANDOM() LIMIT 1";
         try (Connection conn = ConexionBdd.getConnection();
@@ -60,9 +67,12 @@ public class PenduController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // Par défaut, renvoyer JAVA
         return "JAVA";
     }
 
+    // Création de boutons pour faire un clavier virtuel
     private void createKeyboard() {
         keyboardPane.getChildren().clear();
         for (char caractere = 'A'; caractere <= 'Z'; caractere++) {
@@ -73,11 +83,13 @@ public class PenduController {
         }
     }
 
+    // Gestion lorsqu'on clique sur le clavier
     private void handleGuess(Button btn) {
         String letter = btn.getText();
         btn.setDisable(true);
         usedLetters.add(letter);
 
+        // Vérif si le mot contient la lettre
         if (secretWord.contains(letter)) {
             for (int i = 0; i < secretWord.length(); i++) {
                 if (secretWord.charAt(i) == letter.charAt(0))
@@ -88,10 +100,12 @@ public class PenduController {
             drawHangman(mistakes);
         }
 
+        // MAJ UI
         updateUI();
         checkGameOver();
     }
 
+    // Création du pendu en fonction des fautes
     private void drawHangman(int step) {
         GraphicsContext dessin = canvas.getGraphicsContext2D();
         dessin.setStroke(Color.WHITE);
@@ -128,6 +142,7 @@ public class PenduController {
         }
     }
 
+    // MAJ UI pour les lettre utilisées
     private void updateUI() {
         StringBuilder display = new StringBuilder();
         for (char caractere : guessedWord)
@@ -136,6 +151,7 @@ public class PenduController {
         usedLettersLabel.setText("Lettres : " + String.join(", ", usedLetters));
     }
 
+    // Vérif si on a gagné ou pas
     private void checkGameOver() {
         if (new String(guessedWord).equals(secretWord)) {
             wordDisplayLabel.setText("GAGNÉ ! (" + secretWord + ")");
@@ -147,6 +163,7 @@ public class PenduController {
         }
     }
 
+    // Sauvegarde des scores dans la BDD
     private void sauvegarderScore(int score) {
         String sql = "INSERT INTO scores(jeu, score) VALUES(?, ?)";
         try (Connection conn = ConexionBdd.getConnection();
@@ -159,6 +176,7 @@ public class PenduController {
         }
     }
 
+    // Retour au menu
     @FXML
     void switchToMenu() throws Exception {
         new HelloApplication().switchScene("menu.fxml");

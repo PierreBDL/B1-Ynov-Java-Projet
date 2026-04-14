@@ -16,14 +16,13 @@ public class HelloApplication extends Application {
         this.stage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("menu.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        // Enlever message plein écran
-        stage.setFullScreenExitHint("");
-        stage.setFullScreen(true);
+        stage.setFullScreenExitHint(""); // Enlever message plein écran
+        stage.setFullScreen(true); // Plein écran
         stage.setTitle("Projet Java");
         stage.setScene(scene);
         stage.show();
 
-        // BDD
+        // BDD tentative de connexion à la création de la fenêtre
         try {
             ConexionBdd.getConnection();
         } catch (Exception e) {
@@ -31,6 +30,7 @@ public class HelloApplication extends Application {
         }
     }
 
+    // Changer de fichier fxml
     public void switchScene(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(fxml));
         Scene scene = new Scene(fxmlLoader.load());
@@ -49,8 +49,8 @@ public class HelloApplication extends Application {
 
         stage.setScene(scene);
 
-        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitHint(""); // Enlever message plein écran
 
-        stage.setFullScreen(true);
+        stage.setFullScreen(true); // Plein écran
     }
 }
