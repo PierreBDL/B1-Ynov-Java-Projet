@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
@@ -24,6 +25,12 @@ public class PacmanController {
     private javafx.scene.layout.Pane gameOverOverlay;
     @FXML
     private javafx.scene.control.Label finalScoreLabel;
+    @FXML
+    private Button btnPouvoir;
+    @FXML
+    private javafx.scene.control.Label timerLabel;
+    @FXML
+    private javafx.scene.control.Label LabelGameOver;
 
     // Tiles
     private final int tileSize = 32;
@@ -34,6 +41,12 @@ public class PacmanController {
     private int curDX = 0, curDY = 0;
     private int playerX, playerY;
     private int[][] enemies;
+    private int timerPouvoir = 0;
+    private boolean isPowerActive = false;
+    private int cooldownPouvoir = 0;
+    private int[] enemyUnderTile;
+    private int secondesRestantesReelles;
+    private int timerSpawnEnnemies = 0;
 
     // 0 = Sol, 1 = Mur, 2 -> Ennemis, 3 -> Joueur, 4 = Points
     private int[][] map = {
@@ -94,7 +107,7 @@ public class PacmanController {
                 return;
             }
 
-            // Toutes les 0.3 secondes
+            // Toutes les 0.25 secondes
             if (now - lastTick > 300_000_000) {
                 lastTick = now;
 
@@ -102,6 +115,41 @@ public class PacmanController {
                 iaEnnemies();
 
                 update();
+
+                // Pouvoir
+                if (isPowerActive) {
+                    timerPouvoir++;
+
+                    double secRelatived = (timerPouvoir * 0.3);
+                    timerLabel.setText("Pouvoir : " + (int) (20.0 - secRelatived * 0.3) + "s");
+
+                    if (timerPouvoir >= 66) {
+                        isPowerActive = false;
+                        timerPouvoir = 0;
+                        cooldownPouvoir = 30;
+                        timerLabel.setText("");
+                    }
+                }
+
+                if (cooldownPouvoir > 0) {
+                    cooldownPouvoir--;
+                    timerLabel.setText("Cooldown : " + (int) (cooldownPouvoir * 0.3) + "s");
+
+                    if (cooldownPouvoir == 0) {
+                        btnPouvoir.setDisable(false);
+                        timerLabel.setText("");
+                    }
+                }
+
+                // S'il y a moins de 3 ennemis, en faire réapparaitre
+                if (enemies.length < 3) {
+                    timerSpawnEnnemies++;
+
+                    // Si 5 sec éccoulés
+                    if (timerSpawnEnnemies == 20) {
+                        spawnEnnemies();
+                    }
+                }
             }
         }
     };
@@ -152,8 +200,9 @@ public class PacmanController {
 
     // Logique de déplacement du serpent
     private void playerMovement(int dx, int dy) {
-        if (isDead)
+        if (isDead) {
             return;
+        }
 
         int newX = playerX + dx;
         int newY = playerY + dy;
@@ -169,17 +218,31 @@ public class PacmanController {
 
         // Récupération points
         if (map[newY][newX] == 4) {
-            score += 10;
+            score += 1;
             if (scoreLabel != null) {
                 scoreLabel.setText("Score: " + score);
             }
         }
 
-        // Vérifier si c'est un ennemi
-        if (map[newY][newX] == 2) {
-            isDead = true;
-            System.out.println("Game Over!");
+        // Vérifier victoire
+        if (verifierVictoire()) {
+            win();
             return;
+        }
+
+        // Vérifier si c'est un ennemi
+        if (map[newY][newX] == 2 && !isPowerActive) {
+            isDead = true;
+            gameOver();
+            return;
+        } else {
+            // Si pouvoir actif, tuer l'ennemi
+            if (map[newY][newX] == 2 && isPowerActive) {
+                score += 20;
+                scoreLabel.setText("Score: " + score);
+                enemies = java.util.Arrays.stream(enemies).filter(e -> !(e[0] == newY && e[1] == newX))
+                        .toArray(int[][]::new);
+            }
         }
 
         // MAJ positions
@@ -229,11 +292,15 @@ public class PacmanController {
         }
 
         enemies = listEnemies.toArray(new int[0][0]);
+        enemyUnderTile = new int[enemies.length];
     }
 
     // IA des ennemis
     private void iaEnnemies() {
         java.util.Random rand = new java.util.Random();
+        int typeOfFloorEnnemy1;
+        int typeOfFloorEnnemy2;
+        int typeOfFloorEnnemy3;
 
         int[][] directions = {
                 { 0, 1 },
@@ -259,17 +326,21 @@ public class PacmanController {
                 int destination = map[newY][newX];
 
                 // Si joueur touché -> Game Over
-                if (destination == 3) {
+                if (destination == 3 && !isPowerActive) {
                     isDead = true;
                     gameOver();
                     return;
                 }
 
                 // Si la case est libre
-                if (destination != 1 && destination != 2) {
-                    map[ennemiY][ennemiX] = 0;
+                if (destination == 0 || destination == 4) {
+                    // Remettre la tuile
+                    map[ennemiY][ennemiX] = enemyUnderTile[i];
 
-                    // MAJ coodonnées
+                    // Sauvegarde tuile
+                    enemyUnderTile[i] = destination;
+
+                    // MAJ coordonnées
                     enemies[i][0] = newY;
                     enemies[i][1] = newX;
 
@@ -295,13 +366,13 @@ public class PacmanController {
 
     // Menu
     @FXML
-    void switchToMenu() throws Exception {
+    private void switchToMenu() throws Exception {
         HelloApplication app = new HelloApplication();
         app.switchScene("menu.fxml");
     }
 
     // Sauvegarder
-    void sauvegarderScore(int score) {
+    private void sauvegarderScore(int score) {
         String sql = "INSERT INTO scores(jeu, score) VALUES('PacMan', " + score + ")";
         try (Connection conn = ConexionBdd.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -309,5 +380,52 @@ public class PacmanController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Activer pouvoir
+    @FXML
+    private void activerPouvoir() {
+        isPowerActive = true;
+        timerPouvoir = 0;
+        btnPouvoir.setDisable(true);
+        secondesRestantesReelles = 0;
+    }
+
+    // Apparition ennemis toutes les 5 secondes
+    private void spawnEnnemies() {
+        map[8][11] = 2;
+        timerSpawnEnnemies = 0;
+
+        // Ajouter ennemi
+        List<int[]> list = new ArrayList<>(java.util.Arrays.asList(enemies));
+        list.add(new int[] { 8, 11 });
+        enemies = list.toArray(new int[0][0]);
+
+        int[] newUnder = new int[enemies.length];
+        System.arraycopy(enemyUnderTile, 0, newUnder, 0, enemyUnderTile.length);
+        enemyUnderTile = newUnder;
+    }
+
+    // Victoire
+    private boolean verifierVictoire() {
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++) {
+                if (map[y][x] == 4) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void win () {
+        LabelGameOver.setText("Victoire");
+        sauvegarderScore(score);
+
+        // Afficher l'overlay
+        finalScoreLabel.setText("Score: " + score);
+        gameOverOverlay.setVisible(true);
+
+        gameLoop.stop();
     }
 }

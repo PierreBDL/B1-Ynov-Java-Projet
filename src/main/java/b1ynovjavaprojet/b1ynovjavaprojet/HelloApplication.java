@@ -39,6 +39,12 @@ public class HelloApplication extends Application {
             ((SnakeController) controller).setupControls(scene);
         }
 
+        // Activation des toches du clavier pour Pacman
+        Object controllerPacman = fxmlLoader.getController();
+        if (controllerPacman instanceof PacmanController) {
+            ((PacmanController) controllerPacman).setupControls(scene);
+        }
+
         stage.setScene(scene);
     }
 }

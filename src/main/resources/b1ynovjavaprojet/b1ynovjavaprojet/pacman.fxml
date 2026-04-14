@@ -9,18 +9,28 @@
     style="-fx-background-color: black;" stylesheets="@style.css">
 
     <StackPane fx:id="container" alignment="CENTER">
-        <Canvas fx:id="canvas" width="672" height="416" /> <Label text="Score: 0" fx:id="scoreLabel" textFill="white"
+        <Canvas fx:id="canvas" width="672" height="416" />
+        <Label text="Score: 0" fx:id="scoreLabel" textFill="white"
             StackPane.alignment="TOP_CENTER"
             style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20 0 0 0;" />
-            
-        <Button text="Retour au menu" onAction="#switchToMenu" 
+
+        <Label fx:id="timerLabel" text="" textFill="#00FF00"
+            StackPane.alignment="TOP_LEFT"
+            style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 20 0 0 20;" />
+
+        <Button text="Pouvoir" fx:id="pouvoirBtn" textFill="white"
+            StackPane.alignment="BOTTOM_RIGHT"
+            style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-margin: 20px 20px;"
+            styleClass="game-button" onAction="#activerPouvoir" />
+
+        <Button text="Retour au menu" onAction="#switchToMenu"
             StackPane.alignment="BOTTOM_CENTER"
             styleClass="menu-button" style="-fx-translate-y: -20;" />
     </StackPane>
 
     <VBox fx:id="gameOverOverlay" visible="false" alignment="CENTER" spacing="20"
         style="-fx-background-color: rgba(0, 0, 0, 0.85);">
-        <Label text="GAME OVER" textFill="white" style="-fx-font-size: 60px; -fx-font-weight: bold;" />
+        <Label text="GAME OVER" fx:id="LabelGameOver" textFill="white" style="-fx-font-size: 60px; -fx-font-weight: bold;" />
         <Label fx:id="finalScoreLabel" text="Score: 0" textFill="#e3b341"
             style="-fx-font-size: 32px;" />
         <Button text="Retour au menu" onAction="#switchToMenu" styleClass="game-button" />

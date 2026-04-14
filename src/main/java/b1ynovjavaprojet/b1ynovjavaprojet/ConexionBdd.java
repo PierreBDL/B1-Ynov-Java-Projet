@@ -51,11 +51,11 @@ public class ConexionBdd {
             st.executeUpdate("INSERT OR IGNORE INTO pendu_mots (mot) VALUES "
                     + "('ordinateur'), "
                     + "('javafx'), "
-                    + "('sqlite')"
+                    + "('sqlite'),"
                     + "('programmation'), "
-                    + "('developpement')"
+                    + "('developpement'),"
                     + "('application'), "
-                    + "('interface')"
+                    + "('interface'),"
                     + "('utilisateur'), "
                     + "('projet')");
         }
