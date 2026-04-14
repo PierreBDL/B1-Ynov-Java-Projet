@@ -13,6 +13,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class PacmanController {
 
@@ -31,6 +32,12 @@ public class PacmanController {
     private javafx.scene.control.Label timerLabel;
     @FXML
     private javafx.scene.control.Label LabelGameOver;
+    @FXML
+    private javafx.scene.shape.Rectangle health1;
+    @FXML
+    private javafx.scene.shape.Rectangle health2;
+    @FXML
+    private javafx.scene.shape.Rectangle health3;
 
     // Tiles
     private final int tileSize = 32;
@@ -48,6 +55,10 @@ public class PacmanController {
     private int secondesRestantesReelles = 0;
     private int timerSpawnEnnemies = 0;
     private int cyclesPourScore = 0;
+    private int casesRestantesGlissage = 0;
+    private int health = 3;
+    private int maxHealth = 3;
+    private boolean hasCollidedThisFrame = false;
 
     // 0 = Sol, 1 = Mur, 2 -> Ennemis, 3 -> Joueur, 4 = Points
     private int[][] map = {
@@ -112,6 +123,9 @@ public class PacmanController {
             if (now - lastTick > 300_000_000) {
                 lastTick = now;
 
+                // Reset flag de collision
+                hasCollidedThisFrame = false;
+
                 // Mouvements ennemis
                 iaEnnemies();
 
@@ -166,13 +180,23 @@ public class PacmanController {
     };
 
     private void update() {
-        if (isDead || (curDX == 0 && curDY == 0)) {
+        if (isDead) {
             draw();
             return;
         }
 
         // Fais bouger pacman
-        playerMovement(curDX, curDY);
+        if (casesRestantesGlissage > 0) {
+            playerMovement(curDX, curDY);
+            casesRestantesGlissage--;
+
+            if (casesRestantesGlissage <= 0) {
+                casesRestantesGlissage = 0;
+                curDX = 0;
+                curDY = 0;
+            }
+        }
+
         draw();
     }
 
@@ -209,7 +233,7 @@ public class PacmanController {
         }
     }
 
-    // Logique de déplacement du serpent
+    // Logique de déplacement du joueur
     private void playerMovement(int dx, int dy) {
         if (isDead) {
             return;
@@ -218,12 +242,11 @@ public class PacmanController {
         int newX = playerX + dx;
         int newY = playerY + dy;
 
-        // Vérifier les limites
-        if (newY < 0 || newY >= map.length || newX < 0 || newX >= map[0].length)
-            return;
-
-        // Vérifier si c'est un mur
-        if (map[newY][newX] == 1) {
+        // Vérifier les limites ou les murs
+        if (newY < 0 || newY >= map.length || newX < 0 || newX >= map[0].length || map[newY][newX] == 1) {
+            casesRestantesGlissage = 0;
+            curDX = 0;
+            curDY = 0;
             return;
         }
 
@@ -263,8 +286,8 @@ public class PacmanController {
         }
 
         // Reset directions
-        curDX = 0;
-        curDY = 0;
+        // curDX = 0;
+        // curDY = 0;
 
         draw();
     }
@@ -275,17 +298,29 @@ public class PacmanController {
             KeyCode code = event.getCode();
 
             if (code == KeyCode.W || code == KeyCode.Z) {
-                curDX = 0;
-                curDY = -1;
+                if (casesRestantesGlissage <= 0) {
+                    curDX = 0;
+                    curDY = -1;
+                    casesRestantesGlissage = 2;
+                }
             } else if (code == KeyCode.S) {
-                curDX = 0;
-                curDY = 1;
+                if (casesRestantesGlissage <= 0) {
+                    curDX = 0;
+                    curDY = 1;
+                    casesRestantesGlissage = 2;
+                }
             } else if (code == KeyCode.A || code == KeyCode.Q) {
-                curDX = -1;
-                curDY = 0;
+                if (casesRestantesGlissage <= 0) {
+                    curDX = -1;
+                    curDY = 0;
+                    casesRestantesGlissage = 2;
+                }
             } else if (code == KeyCode.D) {
-                curDX = 1;
-                curDY = 0;
+                if (casesRestantesGlissage <= 0) {
+                    curDX = 1;
+                    curDY = 0;
+                    casesRestantesGlissage = 2;
+                }
             }
         });
     }
@@ -309,9 +344,6 @@ public class PacmanController {
     // IA des ennemis
     private void iaEnnemies() {
         java.util.Random rand = new java.util.Random();
-        int typeOfFloorEnnemy1;
-        int typeOfFloorEnnemy2;
-        int typeOfFloorEnnemy3;
 
         int[][] directions = {
                 { 0, 1 },
@@ -337,10 +369,15 @@ public class PacmanController {
                 int destination = map[newY][newX];
 
                 // Si joueur touché -> Game Over
-                if (destination == 3 && !isPowerActive) {
-                    isDead = true;
-                    gameOver();
-                    return;
+                if (destination == 3 && !isPowerActive && !hasCollidedThisFrame) {
+                    if (health > 0) {
+                        loseHealth();
+                        hasCollidedThisFrame = true;
+                    } else {
+                        isDead = true;
+                        gameOver();
+                        return;
+                    }
                 }
 
                 // Si la case est libre
@@ -443,5 +480,22 @@ public class PacmanController {
         gameOverOverlay.setVisible(true);
 
         gameLoop.stop();
+    }
+
+    // Gestion vie
+    private void loseHealth() {
+        health--;
+        updateHealthBar();
+
+        if (health <= 0) {
+            isDead = true;
+            gameOver();
+        }
+    }
+
+    private void updateHealthBar() {
+        health1.setFill(health >= 1 ? Color.RED : Color.GRAY);
+        health2.setFill(health >= 2 ? Color.RED : Color.GRAY);
+        health3.setFill(health >= 3 ? Color.RED : Color.GRAY);
     }
 }

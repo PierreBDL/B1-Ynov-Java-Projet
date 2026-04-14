@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.shape.*?>
 
 <StackPane fx:id="gameRoot" xmlns:fx="http://javafx.com/fxml"
     fx:controller="b1ynovjavaprojet.b1ynovjavaprojet.PacmanController"
@@ -18,7 +19,17 @@
             StackPane.alignment="TOP_LEFT"
             style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 20 0 0 20;" />
 
-        <Button text="Pouvoir" fx:id="pouvoirBtn" textFill="white"
+        <HBox fx:id="healthContainer" alignment="TOP_RIGHT" spacing="5"
+            StackPane.alignment="TOP_RIGHT" style="-fx-padding: 20 20 0 0;">
+            <Label text="Health:" textFill="white" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+            <HBox fx:id="healthBar" spacing="5">
+                <Rectangle fx:id="health1" width="20" height="20" fill="#FF0000" />
+                <Rectangle fx:id="health2" width="20" height="20" fill="#FF0000" />
+                <Rectangle fx:id="health3" width="20" height="20" fill="#FF0000" />
+            </HBox>
+        </HBox>
+
+        <Button text="Pouvoir" fx:id="btnPouvoir" textFill="white"
             StackPane.alignment="BOTTOM_RIGHT"
             style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-margin: 20px 20px;"
             styleClass="game-button" onAction="#activerPouvoir" />
