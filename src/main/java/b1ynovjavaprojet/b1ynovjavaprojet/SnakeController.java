@@ -63,7 +63,7 @@ public class SnakeController {
     @FXML
     public void initialize() {
         dessin = canvas.getGraphicsContext2D();
-        
+
         // Charger images
         try {
             String pommePath = "/b1ynovjavaprojet/b1ynovjavaprojet/images/snake/pomme.png";
@@ -86,7 +86,8 @@ public class SnakeController {
             if (isSerpentBody != null) {
                 SerpentCorpsImg = new javafx.scene.image.Image(isSerpentBody);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         // Lancement du jeu
         loadMap();
@@ -317,7 +318,7 @@ public class SnakeController {
     // Game Over
     private void gameOver() {
         sauvegarderScore();
-        
+
         // Afficher l'overlay
         finalScoreLabel.setText("Score: " + score);
         gameOverOverlay.setVisible(true);
@@ -333,19 +334,19 @@ public class SnakeController {
 
     // Sauvegarder
     void sauvegarderScore() {
-    String sql = "INSERT INTO scores(jeu, score) VALUES(?, ?)";
-    try (Connection conn = ConexionBdd.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setString(1, "Snake");
-        stmt.setInt(2, this.score);
-        
-        stmt.executeUpdate();
-        System.out.println("Score Snake sauvegardé : " + this.score);
-    } catch (SQLException e) {
-        e.printStackTrace();
+        String sql = "INSERT INTO scores(jeu, score) VALUES(?, ?)";
+        try (Connection conn = ConexionBdd.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "Snake");
+            stmt.setInt(2, this.score);
+
+            stmt.executeUpdate();
+            System.out.println("Score Snake sauvegardé : " + this.score);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     // Collisions avec la queue
     private boolean checkQueueCollisions() {

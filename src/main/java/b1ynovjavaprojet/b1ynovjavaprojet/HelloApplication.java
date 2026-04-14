@@ -16,6 +16,8 @@ public class HelloApplication extends Application {
         this.stage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("menu.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        // Enlever message plein écran
+        stage.setFullScreenExitHint("");
         stage.setFullScreen(true);
         stage.setTitle("Projet Java");
         stage.setScene(scene);
@@ -46,5 +48,9 @@ public class HelloApplication extends Application {
         }
 
         stage.setScene(scene);
+
+        stage.setFullScreenExitHint("");
+
+        stage.setFullScreen(true);
     }
 }

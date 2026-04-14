@@ -138,10 +138,15 @@ public class TrueFalseController {
     }
 
     void sauvegarderScore(int score) {
-        String sql = "INSERT INTO scores(jeu, score) VALUES('TrueFalse', " + score + ")";
+        String sql = "INSERT INTO scores(jeu, score) VALUES(?, ?)";
         try (Connection conn = ConexionBdd.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "TrueFalse");
+            stmt.setInt(2, this.score);
+
             stmt.executeUpdate();
+            System.out.println("Score Snake sauvegardé : " + this.score);
         } catch (SQLException e) {
             e.printStackTrace();
         }
