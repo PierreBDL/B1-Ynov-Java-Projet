@@ -32,4 +32,6 @@
             <TableColumn fx:id="colScore" text="Score" prefWidth="250"/>
         </columns>
     </TableView>
+
+    <Button text="Quitter" styleClass="game-button" onAction="#quitGame"/>
 </VBox>

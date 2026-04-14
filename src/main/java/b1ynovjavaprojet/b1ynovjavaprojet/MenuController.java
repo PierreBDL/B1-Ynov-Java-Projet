@@ -72,4 +72,8 @@ public class MenuController {
         HelloApplication app = new HelloApplication();
         app.switchScene("pendu.fxml");
     }
+
+    public void quitGame() {
+        System.exit(0);
+    }
 }
